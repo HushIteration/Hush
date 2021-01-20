@@ -44,6 +44,11 @@ export const addNewMessage = (messagePayload) => ({
   payload: messagePayload
 });
 
+export const addMessage = (messagePayload) => ({
+  type: types.ADD_MESSAGE,
+  payload: messagePayload
+});
+
 export const logout = () => ({
   type: types.LOGOUT
 });

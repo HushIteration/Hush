@@ -85,6 +85,7 @@ by default our client will emit a "defineClient" event that will carry with it a
 const socketIdPhoneBook = {};
 const Conversation = models.Conversation;
 
+// listens for any connection
 io.on("connection", (socket) => {
   // when user joins room
   socket.on("joinRoom", (room) => {
@@ -106,42 +107,42 @@ io.on("connection", (socket) => {
   });
 
   socket.on('directMessage', (dirtyMessageObj) => {
-        console.log('inside DIRTY server message obj = ', dirtyMessageObj)
-        let messageObj = JSON.parse(dirtyMessageObj);
-    
-        const { cid, sender, recipient, text, timestamp} = messageObj; //from client -> server
-        let recipientSocketId = socketIdPhoneBook[recipient]; //socket it for recipient
-    
-        const secret = 'tacos'
-        let ciphertext = CryptoJS.AES.encrypt(text, secret).toString();
-    
-        const newMessage = {
-          sender,
-          recipient,
-          'text' : ciphertext,
-          timestamp
-        };
-        console.log(newMessage)
-    
-        //doing findOneAndUpdate twice because we may need to add different features. we will see...
-        if (!recipientSocketId){ //just add to the database there is no live recipient
-          Conversation.findOneAndUpdate({_id: cid}, { $push: {messages: newMessage}}, {new: true})
-          .then((conversation) => {
-            console.log(conversation);
-          })
-        } else {//there is a live socket to route to
-          Conversation.findOneAndUpdate({_id: cid}, { $push: {messages: newMessage}}, {new: true})
-          .then( () => {
-            socket.to(recipientSocketId).emit('outGoingDM', JSON.stringify(newMessage));
-          })
-        }
-    
+    console.log('inside DIRTY server message obj = ', dirtyMessageObj)
+    let messageObj = JSON.parse(dirtyMessageObj);
+
+    const { cid, sender, recipient, text, timestamp} = messageObj; //from client -> server
+    let recipientSocketId = socketIdPhoneBook[recipient]; //socket it for recipient
+
+    const secret = 'tacos'
+    let ciphertext = CryptoJS.AES.encrypt(text, secret).toString();
+
+    const newMessage = {
+      sender,
+      recipient,
+      'text' : ciphertext,
+      timestamp
+    };
+    console.log(newMessage)
+
+    //doing findOneAndUpdate twice because we may need to add different features. we will see...
+    if (!recipientSocketId){ //just add to the database there is no live recipient
+      Conversation.findOneAndUpdate({_id: cid}, { $push: {messages: newMessage}}, {new: true})
+      .then((conversation) => {
+        console.log(conversation);
       })
-    
-      socket.on('plzDisconnect', (username) => {
-        delete socketIdPhoneBook[username];
-        //uniqueClientConnect.disconnect(true) MAYBE socket.disconnect(true);
+    } else {//there is a live socket to route to
+      Conversation.findOneAndUpdate({_id: cid}, { $push: {messages: newMessage}}, {new: true})
+      .then( () => {
+        socket.to(recipientSocketId).emit('outGoingDM', JSON.stringify(newMessage));
       })
+    }
+
+  })
+
+  socket.on('plzDisconnect', (username) => {
+    delete socketIdPhoneBook[username];
+    //uniqueClientConnect.disconnect(true) MAYBE socket.disconnect(true);
+  })
 
   
 });

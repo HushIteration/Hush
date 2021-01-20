@@ -10,7 +10,8 @@ const initialState = {
   activeChat: {cid: '', conversation: []},
   activeConversations: [],
   activesLoaded: false,
-  clientSocket: {}
+  clientSocket: {},
+  messageArray: []
 };
 
 const userReducer = (state = initialState, action) => {
@@ -96,6 +97,15 @@ const userReducer = (state = initialState, action) => {
         'conversation': conversation
       }
     };
+  }
+
+  case types.ADD_MESSAGE: {
+    const messageArray = [...state.messageArray, action.payload]
+    // console.log('addMessagehit', messageArray);
+    return {
+      ...state,
+      messageArray
+    }
   }
 
   default:

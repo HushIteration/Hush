@@ -3,16 +3,30 @@ import styled from "styled-components";
 
 const socket = io();
 
+
+
+
+
 /**
  * Renders active conversations to sidepanel
  */
+ 
 
 const Conversations = ({
+  addMessage,
   setActiveChat,
   activeConversations,
   setActiveConversations,
   email,
 }) => {
+
+  // mapping dispatch to props- ADD_MESSAGE action creator 
+// const mapDispatchToProps = dispatch => ({
+//   addMessage: (message) => {
+//     dispatch(addMessage(message));
+//   }
+// });
+
   /**
    * Set state
    * directOpen determines whether to expand or hide active direct messages - passed as prop to styled component and changes display based on value
@@ -31,7 +45,6 @@ const Conversations = ({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: email }),
       };
-
       try {
         const request = await fetch("/chat/userconvos", requestOptions);
         const response = await request.json();
@@ -110,53 +123,16 @@ const Conversations = ({
     console.log(getId)
     socket.emit('joinRoom', (getId));
 
-    // receiving messages from server
+    // receiving messages from s
     socket.on('message', message => {
       console.log(message);
+      addMessage(message)
       // outputMessage(message);
     
       // // Scroll down
       // chatMessages.scrollTop = chatMessages.scrollHeight;
     });
   }
-
-  // // Get room and users
-  // socket.on('roomUsers', ({ room, users }) => {
-  //   outputRoomName(room);
-  //   outputUsers(users);
-  // });
-
-  // // Message from server
-  // socket.on('message', message => {
-  //   console.log(message);
-  //   outputMessage(message);
-
-  //   // Scroll down
-  //   chatMessages.scrollTop = chatMessages.scrollHeight;
-  // });
-
-  // // Message submit
-  // chatForm.addEventListener('submit', e => {
-  //   e.preventDefault();
-
-  //   // Get message text
-  //   let msg = e.target.elements.msg.value;
-    
-  //   msg = msg.trim();
-    
-  //   if (!msg){
-  //     return false;
-  //   }
-
-  //   // Emit message to server
-  //   socket.emit('chatMessage', msg);
-
-  //   // Clear input
-  //   e.target.elements.msg.value = '';
-  //   e.target.elements.msg.focus();
-  // });
-  //-----------------------------------------
-
 
   return (
     <Container>

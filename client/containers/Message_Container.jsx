@@ -18,5 +18,6 @@ export const Message_Container = connect(state => ({
   activeChat: state.user.activeChat,
   email: state.user.email,
   activeRecipient: state.user.activeRecipient,
-  clientSocket: state.user.clientSocket
+  clientSocket: state.user.clientSocket,
+  message: state.user.messageArray
 }), mapDispatchToProps)(MessagesDisplay);

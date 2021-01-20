@@ -9,7 +9,7 @@ import Messages from './Messages.jsx';
  * Consists of messages and input to send messages
  */
 
-const Message_Display = ({ activeChat, sendMessage, activeConversations, email, activeRecipient, clientSocket, addNewMessage }) => {
+const Message_Display = ({ activeChat, sendMessage, activeConversations, email, activeRecipient, clientSocket, addNewMessage, message }) => {
   return (
     <Container>
       <Messages
