@@ -14,6 +14,7 @@ const Conversations = ({
   activeConversations,
   setActiveConversations,
   email,
+  isGroupOrDm
 }) => {
 
   // mapping dispatch to props- ADD_MESSAGE action creator 
@@ -102,7 +103,6 @@ const Conversations = ({
       (async () => {
         const request = await fetch("/chat/convo", requestOptions);
         const response = await request.json();
-        console.log;
         // setActiveChat action updates state with currently selected user chat log
         setActiveChat({ response: response, recipient: e.target.innerText });
       })();
@@ -114,20 +114,32 @@ const Conversations = ({
   //-----------------------------------------
   // create a new room functionality
   // Join chatroom
-  const joinRoomBtn = () => {
-    const getId = document.querySelector('#stevendiorio').innerHTML
-    console.log(getId)
-    socket.emit('joinRoom', (getId));
+  const randomChatRooms = ['STAB-RABBIT', 'MUSCULAR-CORGI', 'EVIL-SNOWMAN', 'DROOPY-EYED-SNAKE'];
+  let chatrooms = []
 
+  const joinRoomBtn = (e, roomName) => {
+    // const getId = document.querySelector(`#${roomName}`).innerHTML
+    let currentRoom = e.target.id
+    // const getId = document.getElementById(currentRoom).innerHTML
+    socket.emit('joinRoom', (currentRoom));
+    // changing state to true, only sending message in group chat
+    console.log('CONVERSATION.JSX -----> ', isGroupOrDm)
+    isGroupOrDm()
     // receiving messages from s
     socket.on('message', message => {
       console.log(message);
       addMessage(message)
       // outputMessage(message);
-    
+      
       // // Scroll down
       // chatMessages.scrollTop = chatMessages.scrollHeight;
     });
+  }
+
+  // creating list items or a tags or whatever the fuck
+  for (let i = 0; i < randomChatRooms.length; i += 1) {
+    let temp = randomChatRooms[i]
+    chatrooms.push(<li id={temp} onClick={(e, temp) => joinRoomBtn(e, temp)}>{randomChatRooms[i]}</li>)
   }
 
   return (
@@ -156,9 +168,7 @@ const Conversations = ({
           </GroupCaret>
         </li>
         <InnerList open={groupOpen}>
-          <p id="keithisbetter"> Keith's Room </p>
-          <p id="jaketan"> Tommy's Room </p>
-          <p id="stevendiorio">StevensRoom</p>
+          {chatrooms}
         </InnerList>
         <button> create a chat room </button>
         <button onClick={joinRoomBtn}> join a chat room </button>

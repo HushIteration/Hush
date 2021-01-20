@@ -11,7 +11,8 @@ const initialState = {
   activeConversations: [],
   activesLoaded: false,
   clientSocket: {},
-  messageArray: []
+  messageArray: [], 
+  isGroupOrDm: false
 };
 
 const userReducer = (state = initialState, action) => {
@@ -105,6 +106,13 @@ const userReducer = (state = initialState, action) => {
     return {
       ...state,
       messageArray
+    }
+  }
+
+  case types.IS_GROUP_OR_DM: {
+    return {
+      ...state,
+      isGroupOrDm: true
     }
   }
 

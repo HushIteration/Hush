@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import Sidepanel from '../components/Sidepanel.jsx';
-import { initiateConversation, setActiveChat, addMessage } from '../actions/actions.js';
+import { initiateConversation, setActiveChat, addMessage, isGroupOrDm } from '../actions/actions.js';
 
 const mapDispatchToProps = dispatch => ({
   initiateConversation: (email) => {
@@ -11,6 +11,9 @@ const mapDispatchToProps = dispatch => ({
   },
   addMessage: (message) => {
     dispatch(addMessage(message));
+  },
+  isGroupOrDm: () => {
+    dispatch(isGroupOrDm());
   }
 });
 

@@ -52,3 +52,8 @@ export const addMessage = (messagePayload) => ({
 export const logout = () => ({
   type: types.LOGOUT
 });
+
+export const isGroupOrDm = (bool) => ({
+  type: types.IS_GROUP_OR_DM,
+  payload: bool
+});

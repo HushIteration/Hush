@@ -3,7 +3,10 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import CryptoJS from "crypto-js";
 
-const SendMessage = ({ activeChat, email, activeRecipient, clientSocket, addNewMessage }) => {
+const SendMessage = ({ activeChat, email, activeRecipient, clientSocket, addNewMessage, isGroupOrDm}) => {
+
+  console.log("MessagesDisplay boolean", isGroupOrDm)
+  
   /**
 Socket Helper Functions
  */
@@ -28,19 +31,26 @@ const socket = io();
   let input;
 
   const handleSubmit = (e) => {
+    console.log('SEND MESSAGE ------> poo poo platter', isGroupOrDm)
     e.preventDefault();
-    let date = new Date()
-    let dateInSeconds = Date.parse(date);
-    sendDM(activeChat.cid, email, activeRecipient, input.value);
-    const secret = 'tacos';
-    let ciphertext = CryptoJS.AES.encrypt(input.value, secret).toString();
-    addNewMessage({sender: email, recipient: activeRecipient, text: ciphertext, timestamp: dateInSeconds});
-    // input.value= '';
+    // if isGroupOrDm is false, private message
+    if (!isGroupOrDm) {
+      let date = new Date()
+      let dateInSeconds = Date.parse(date);
+      sendDM(activeChat.cid, email, activeRecipient, input.value);
+      const secret = 'tacos';
+      let ciphertext = CryptoJS.AES.encrypt(input.value, secret).toString();
+      addNewMessage({sender: email, recipient: activeRecipient, text: ciphertext, timestamp: dateInSeconds});
+      input.value= '';
+    } else {
+      console.log('SEND MESSAGE ------> poo poo platter is truthy', isGroupOrDm)
 
-    // group messages 
-    let msg = input.value
-    console.log('SENDMESSAGE ------------> ', input.value)
-    socket.emit('chatMessage', msg);
+      // group messages
+      let msg = input.value
+      console.log('SENDMESSAGE ------------> ', input.value)
+      socket.emit('chatMessage', msg);
+      input.value=''
+    }
   }
 
   return (
