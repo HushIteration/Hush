@@ -1,12 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+
+const socket = io();
 
 /**
  * Renders active conversations to sidepanel
  */
 
-const Conversations = ({ setActiveChat, activeConversations, setActiveConversations, email }) => {
-
+const Conversations = ({
+  setActiveChat,
+  activeConversations,
+  setActiveConversations,
+  email,
+}) => {
   /**
    * Set state
    * directOpen determines whether to expand or hide active direct messages - passed as prop to styled component and changes display based on value
@@ -16,31 +22,28 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
   const [groupOpen, setGroupOpen] = useState(false);
   const [conversationSelected, setConversationSelected] = useState(false);
 
-
-
   // Make request for all active conversations
 
   useEffect(() => {
     (async () => {
       const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: email })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: email }),
       };
 
       try {
-        const request = await fetch('/chat/userconvos', requestOptions);
+        const request = await fetch("/chat/userconvos", requestOptions);
         const response = await request.json();
 
         // update list of users who have an active conversation with logged-in user
 
         setActiveConversations(
-          response.conversations.map(convo => {
-
+          response.conversations.map((convo) => {
             // conversation list query returns both users attached to a conversation
             // filter out user name of logged in user to display only recipient email
             const noDuplicatesArr = [];
-            const temp = convo.participants.filter(user => {
+            const temp = convo.participants.filter((user) => {
               if (user.name !== email && !noDuplicatesArr.includes(user.name)) {
                 noDuplicatesArr.push(user.name);
                 return user.name;
@@ -73,12 +76,12 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
 
   const handleUserClick = (e) => {
     const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         sender: email,
-        recipient: e.target.innerText
-      })
+        recipient: e.target.innerText,
+      }),
     };
 
     /**
@@ -88,9 +91,9 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
 
     try {
       (async () => {
-        const request = await fetch('/chat/convo', requestOptions);
+        const request = await fetch("/chat/convo", requestOptions);
         const response = await request.json();
-        console.log
+        console.log;
         // setActiveChat action updates state with currently selected user chat log
         setActiveChat({ response: response, recipient: e.target.innerText });
       })();
@@ -99,18 +102,71 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
     }
   };
 
+  //-----------------------------------------
+  // create a new room functionality
+  // Join chatroom
+  const joinRoomBtn = () => {
+    const getId = document.querySelector('#stevendiorio').innerHTML
+    console.log(getId)
+    socket.emit('joinRoom', (getId));
+
+    // receiving messages from server
+    socket.on('message', message => {
+      console.log(message);
+      // outputMessage(message);
+    
+      // // Scroll down
+      // chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+  }
+
+  // // Get room and users
+  // socket.on('roomUsers', ({ room, users }) => {
+  //   outputRoomName(room);
+  //   outputUsers(users);
+  // });
+
+  // // Message from server
+  // socket.on('message', message => {
+  //   console.log(message);
+  //   outputMessage(message);
+
+  //   // Scroll down
+  //   chatMessages.scrollTop = chatMessages.scrollHeight;
+  // });
+
+  // // Message submit
+  // chatForm.addEventListener('submit', e => {
+  //   e.preventDefault();
+
+  //   // Get message text
+  //   let msg = e.target.elements.msg.value;
+    
+  //   msg = msg.trim();
+    
+  //   if (!msg){
+  //     return false;
+  //   }
+
+  //   // Emit message to server
+  //   socket.emit('chatMessage', msg);
+
+  //   // Clear input
+  //   e.target.elements.msg.value = '';
+  //   e.target.elements.msg.focus();
+  // });
+  //-----------------------------------------
+
+
   return (
     <Container>
       <Header>Conversations</Header>
       <Ul>
         <li>
-          <DirectCaret
-            onClick={(e) => handleDirectClick(e)}
-            open={directOpen}
-          >
+          <DirectCaret onClick={(e) => handleDirectClick(e)} open={directOpen}>
             Direct
           </DirectCaret>
-          <InnerList open={directOpen} >
+          <InnerList open={directOpen}>
             {activeConversations.map((user, i) => (
               <Direct
                 key={`${user}${i}`}
@@ -123,16 +179,17 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
           </InnerList>
         </li>
         <li>
-          <GroupCaret
-            onClick={(e) => handleGroupClick(e)}
-            open={groupOpen}
-          >
+          <GroupCaret onClick={(e) => handleGroupClick(e)} open={groupOpen}>
             Groups
           </GroupCaret>
         </li>
-        <InnerList open={groupOpen} >
-          <Group>Ian, Ross & Wei</Group>
+        <InnerList open={groupOpen}>
+          <p id="keithisbetter"> Keith's Room </p>
+          <p id="jaketan"> Tommy's Room </p>
+          <p id="stevendiorio"> Steven's Room </p>
         </InnerList>
+        <button> create a chat room </button>
+        <button onClick={joinRoomBtn}> join a chat room </button>
       </Ul>
     </Container>
   );
@@ -147,7 +204,7 @@ const Container = styled.div`
   height: 65%;
   margin-top: -1rem;
   z-index: 2;
-  font-family: 'Josefin Sans', sans-serif;
+  font-family: "Josefin Sans", sans-serif;
   overflow: hidden;
 `;
 const Ul = styled.ul`
@@ -166,37 +223,33 @@ const DirectCaret = styled.span`
     content: "\\005E";
     color: black;
     display: inline-block;
-    padding: .5rem;
-    transform: ${props => props.open ? 'rotate(180deg)' : 'rotate(90deg)'}; 
-  };
+    padding: 0.5rem;
+    transform: ${(props) => (props.open ? "rotate(180deg)" : "rotate(90deg)")};
+  }
 `;
 
 const GroupCaret = styled(DirectCaret)`
   &:before {
-    transform: ${props => props.open ? 'rotate(180deg)' : 'rotate(90deg)'};
+    transform: ${(props) => (props.open ? "rotate(180deg)" : "rotate(90deg)")};
   }
 `;
 
 const Direct = styled.li`
-  
   text-indent: 1rem;
-  padding: .5rem;
+  padding: 0.5rem;
   margin-left: 1rem;
   cursor: pointer;
   &:hover {
     background-color: #fcf7fa;
-    
   }
 `;
 
 const InnerList = styled.ul`
   list-style-type: none;
-  display: ${props => props.open ? 'initial' : 'none'};
+  display: ${(props) => (props.open ? "initial" : "none")};
 `;
 
-const Group = styled(Direct)`
-
-`;
+const Group = styled(Direct)``;
 
 const Header = styled.h3`
   height: fit-content;

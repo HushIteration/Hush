@@ -1,3 +1,5 @@
+// npm i -D webpack webpack-cli webpack-dev-server nodemon concurrently babel-loader @babel/core @babel/preset-env @babel/preset-react mini-css-extract-plugin sass sass-loader style-loader css-loader
+
 const path = require('path');
 
 module.exports = {
