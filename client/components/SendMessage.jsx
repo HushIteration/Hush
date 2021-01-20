@@ -7,6 +7,7 @@ const SendMessage = ({ activeChat, email, activeRecipient, clientSocket, addNewM
   /**
 Socket Helper Functions
  */
+const socket = io();
 
   const sendDM = (cid, sender, recipient, text) => {
 
@@ -34,7 +35,12 @@ Socket Helper Functions
     const secret = 'tacos';
     let ciphertext = CryptoJS.AES.encrypt(input.value, secret).toString();
     addNewMessage({sender: email, recipient: activeRecipient, text: ciphertext, timestamp: dateInSeconds});
-    input.value= '';
+    // input.value= '';
+
+    // group messages 
+    let msg = input.value
+    console.log('SENDMESSAGE ------------> ', input.value)
+    socket.emit('chatMessage', msg);
   }
 
   return (
@@ -43,6 +49,7 @@ Socket Helper Functions
         <Form onSubmit={(e) => handleSubmit(e)}>
           <Input 
             type='text' 
+            id='inputText'
             placeholder='Send a message to Username...' 
             ref={(node) => input = node} 
           />

@@ -95,6 +95,14 @@ io.on("connection", (socket) => {
     socket.emit('message', "TOMMYBOI - Welcome to ChatCord!");
   });
 
+  socket.on('chatMessage', msg => {
+    const user = 'User'
+    //getCurrentUser(socket.id);
+    console.log("backend message: ", msg)
+    io.to("StevensRoom").emit('message', `user: ${msg}`);
+  });
+
+
   // when user logs in
   socket.on("connected", (data) => {
     console.log("user connected ----> ", data);

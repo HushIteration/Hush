@@ -7,7 +7,7 @@ import styled from 'styled-components';
  * 
  * Still need to make responsive & create logic to represent time
  */
-const Message = ({  color, sender, timeStamp, message }) => {
+const Message = ({  color, sender, timeStamp, message, groupMessages }) => {
   const dateOptions = {weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: 'numeric'};
   const formattedDate = new Date(timeStamp).toLocaleDateString('en-US', dateOptions);
   return (

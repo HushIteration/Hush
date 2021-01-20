@@ -3,10 +3,6 @@ import styled from "styled-components";
 
 const socket = io();
 
-
-
-
-
 /**
  * Renders active conversations to sidepanel
  */
@@ -162,7 +158,7 @@ const Conversations = ({
         <InnerList open={groupOpen}>
           <p id="keithisbetter"> Keith's Room </p>
           <p id="jaketan"> Tommy's Room </p>
-          <p id="stevendiorio"> Steven's Room </p>
+          <p id="stevendiorio">StevensRoom</p>
         </InnerList>
         <button> create a chat room </button>
         <button onClick={joinRoomBtn}> join a chat room </button>

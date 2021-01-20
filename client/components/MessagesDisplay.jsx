@@ -15,6 +15,7 @@ const Message_Display = ({ activeChat, sendMessage, activeConversations, email, 
       <Messages
         email={email}
         activeChat={activeChat}
+        groupMessage={message}
       />
       <SendMessage
         addNewMessage={addNewMessage}

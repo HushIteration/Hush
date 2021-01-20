@@ -101,7 +101,7 @@ const userReducer = (state = initialState, action) => {
 
   case types.ADD_MESSAGE: {
     const messageArray = [...state.messageArray, action.payload]
-    // console.log('addMessagehit', messageArray);
+    console.log('addMessagehit', messageArray);
     return {
       ...state,
       messageArray

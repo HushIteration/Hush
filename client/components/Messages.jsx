@@ -9,8 +9,7 @@ import CryptoJS from 'crypto-js';
 /**
  * Renders all individual Message components
  */
-const Messages = ({ activeChat, email }) => {
-
+const Messages = ({ activeChat, email, message, groupMessage }) => {
   // Define colors for sender username
   const colors = {
     user1: '#e91e63',
@@ -45,6 +44,7 @@ const Messages = ({ activeChat, email }) => {
           message={originalText}
           timeStamp={conversation[i].timestamp}
           color={color}
+          groupMessages={groupMessage}
         />
       );
     }
@@ -67,14 +67,17 @@ const Messages = ({ activeChat, email }) => {
             sender={conversation[i].sender}
             message={originalText}
             timeStamp={conversation[i].timestamp}
+            // groupMessages={groupMessage}
           />
         );
       }
     }
   }, [activeChat])
+  console.log('MESSAGES.JSX THIS IS WITH AN S---->',groupMessage)
 
   return (
     <Container>
+      <h1>{groupMessage}</h1>
       {chat}
     </Container>
   );
