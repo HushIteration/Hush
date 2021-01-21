@@ -8,3 +8,25 @@
   height: 100%;
 }
 
+body {
+  background: url(https://res.cloudinary.com/mrtommyliang/image/upload/v1610902001/y-so-serious-white_uu4wzj.png);
+}
+
+.brandNewMessage {
+  text-align: left;
+  font-family: monospace;
+  height: 35px;
+  font-size: 20px;
+}
+
+.groupMessageParentContainer {
+  font-family: monospace;
+  display: flex;
+  flex-direction: column;
+}
+
+.sc-fubCfw {
+  background-color: white;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, .3 );
+  border: none;
+}

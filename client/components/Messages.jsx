@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import Message from './Message.jsx';
 import CryptoJS from 'crypto-js';
-
+import '../style.css'
 
 
 
@@ -22,6 +22,7 @@ const Messages = ({ activeChat, email, message, groupMessage, groupChatName }) =
    */
 
   const chat = [];
+  const groupChat = [];
   const { conversation } = activeChat;
   // build Message component array
   if (conversation.length > 0) {
@@ -32,11 +33,9 @@ const Messages = ({ activeChat, email, message, groupMessage, groupChatName }) =
       const secret = 'tacos';
       let bytes = CryptoJS.AES.decrypt(conversation[i].text, secret);
       let originalText = bytes.toString(CryptoJS.enc.Utf8);
-
       let color;
       if (conversation[i].sender === email) color = colors.user1;
       else color = colors.user2;
-
       chat.push(
         <Message
           key={i}
@@ -48,19 +47,20 @@ const Messages = ({ activeChat, email, message, groupMessage, groupChatName }) =
         />
       );
     }
+    for (let i = 0; i < groupMessage.length ; i+= 1) {
+      groupChat.push(<p className="brandNewMessage">{groupMessage[i]}</p>)
+      console.log(groupChat);
+    }
   }
-
   // re-build Message component array on state update
   useEffect(() => {
     const { conversation } = activeChat;
-
     if (conversation.length > 0) {
       conversation.reverse();
       for (let i = 0; i < conversation.length; i += 1) {
         const secret = 'tacos';
         let bytes = CryptoJS.AES.decrypt(conversation[i].text, secret);
         let originalText = bytes.toString(CryptoJS.enc.Utf8);
-
         chat.push(
           <Message
             key={i}
@@ -71,12 +71,21 @@ const Messages = ({ activeChat, email, message, groupMessage, groupChatName }) =
           />
         );
       }
+      // for loop to push into a new empty array
     }
   }, [activeChat])
+
+  for (let i = 0; i < groupMessage.length ; i+= 1) {
+    groupChat.push(<p className="brandNewMessage">{groupMessage[i]}</p>)
+    console.log(groupChat);
+  };
+
   return (
     <Container>
-      <h1>{groupChatName}</h1>
-      <p>{groupMessage}</p>
+      {/* <div className="groupMessageParentContainer"> */}
+        {groupChat}
+      {/* </div> */}
+      <h1 className="groupChatName">{groupChatName}</h1>
     </Container>
   );
 };
