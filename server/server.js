@@ -88,18 +88,22 @@ const Conversation = models.Conversation;
 // listens for any connection
 io.on("connection", (socket) => {
   // when user joins room
+  let currRoom;
   socket.on("joinRoom", (room) => {
+    currRoom = room;
     console.log("join room working ---> ", room);
     socket.join(room);
     //sending message to user, wecloming to chat room
-    socket.emit('message', "TOMMYBOI - Welcome to ChatCord!");
+    socket.emit('message', `Welcome to ${room}`);
   });
 
-  socket.on('chatMessage', msg => {
+
+  socket.on('chatMessage', (arr) => {
     const user = 'User'
     //getCurrentUser(socket.id);
-    console.log("backend message: ", msg)
-    io.to("StevensRoom").emit('message', `user: ${msg}`);
+    console.log("backend message: ", arr[0])
+    console.log("CURRROOM ------>: ", arr[1])
+    io.to(arr[1]).emit('message', `user: ${arr[0]}`);
   });
 
 

@@ -12,7 +12,8 @@ const initialState = {
   activesLoaded: false,
   clientSocket: {},
   messageArray: [], 
-  isGroupOrDm: false
+  isGroupOrDm: false,
+  currentRoom: ''
 };
 
 const userReducer = (state = initialState, action) => {
@@ -102,7 +103,7 @@ const userReducer = (state = initialState, action) => {
 
   case types.ADD_MESSAGE: {
     const messageArray = [...state.messageArray, action.payload]
-    console.log('addMessagehit', messageArray);
+    // console.log('addMessagehit', messageArray);
     return {
       ...state,
       messageArray
@@ -110,11 +111,20 @@ const userReducer = (state = initialState, action) => {
   }
 
   case types.IS_GROUP_OR_DM: {
+    // console.log('USER REDUCER', action.payload)
     return {
       ...state,
-      isGroupOrDm: true
+      isGroupOrDm: action.payload
     }
   }
+
+  case types.CURRENT_ROOM: {
+    let currentRoom = action.payload
+    return {
+      ...state,
+      currentRoom
+    }
+  } 
 
   default:
     return state;

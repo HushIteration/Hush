@@ -26,6 +26,7 @@ module.exports = {
   devServer: {
     publicPath: '/build/',
     proxy: {
+      '/': 'http://localhost:3000',
       '/user': 'http://localhost:3000',
       '/chat': 'http://localhost:3000',
       '/socket.io': {

@@ -14,7 +14,6 @@ const Dashboard = ({ activesLoaded, setActivesLoaded, setActiveConversations, ac
 
   // if user is not logged in, redirect to login page
   useEffect(() => {
-    console.log(loggedIn);
     if (!loggedIn) history.push('/login');
   }, [loggedIn]);
 

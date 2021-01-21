@@ -14,7 +14,8 @@ const Conversations = ({
   activeConversations,
   setActiveConversations,
   email,
-  isGroupOrDm
+  isGroupOrDm,
+  currentRoom
 }) => {
 
   // mapping dispatch to props- ADD_MESSAGE action creator 
@@ -118,20 +119,14 @@ const Conversations = ({
   let chatrooms = []
 
   const joinRoomBtn = (e, roomName) => {
-    // const getId = document.querySelector(`#${roomName}`).innerHTML
-    let currentRoom = e.target.id
-    // const getId = document.getElementById(currentRoom).innerHTML
-    socket.emit('joinRoom', (currentRoom));
-    // changing state to true, only sending message in group chat
-    console.log('CONVERSATION.JSX -----> ', isGroupOrDm)
-    isGroupOrDm()
-    // receiving messages from s
+    let currRoom = e.target.id
+    isGroupOrDm(true)
+    socket.emit('joinRoom', (currRoom));
     socket.on('message', message => {
       console.log(message);
-      addMessage(message)
-      // outputMessage(message);
-      
-      // // Scroll down
+      addMessage(message);
+      currentRoom(currRoom);
+      // Scroll down
       // chatMessages.scrollTop = chatMessages.scrollHeight;
     });
   }
@@ -139,7 +134,7 @@ const Conversations = ({
   // creating list items or a tags or whatever the fuck
   for (let i = 0; i < randomChatRooms.length; i += 1) {
     let temp = randomChatRooms[i]
-    chatrooms.push(<li id={temp} onClick={(e, temp) => joinRoomBtn(e, temp)}>{randomChatRooms[i]}</li>)
+    chatrooms.push(<li className="groupsName" id={temp} onClick={(e, temp) => joinRoomBtn(e, temp)}>{randomChatRooms[i]}</li>)
   }
 
   return (

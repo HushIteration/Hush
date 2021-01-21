@@ -9,7 +9,7 @@ import Messages from './Messages.jsx';
  * Consists of messages and input to send messages
  */
 
-const Message_Display = ({ activeChat, sendMessage, activeConversations, email, activeRecipient, clientSocket, addNewMessage, message, isGroupOrDm }) => {
+const Message_Display = ({ activeChat, sendMessage, activeConversations, email, activeRecipient, clientSocket, addNewMessage, message, isGroupOrDm, currentRoom }) => {
   return (
     <Container>
       <Messages
@@ -25,6 +25,7 @@ const Message_Display = ({ activeChat, sendMessage, activeConversations, email, 
         activeChat={activeChat}
         dispatch={sendMessage}
         isGroupOrDm={isGroupOrDm}
+        currentRoom={currentRoom}
       />
     </Container>
   );

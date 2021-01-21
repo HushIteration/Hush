@@ -73,8 +73,6 @@ const Messages = ({ activeChat, email, message, groupMessage }) => {
       }
     }
   }, [activeChat])
-  console.log('MESSAGES.JSX THIS IS WITH AN S---->',groupMessage)
-
   return (
     <Container>
       <h1>{groupMessage}</h1>

@@ -57,3 +57,8 @@ export const isGroupOrDm = (bool) => ({
   type: types.IS_GROUP_OR_DM,
   payload: bool
 });
+
+export const currentRoom = (room) => ({
+  type: types.CURRENT_ROOM,
+  payload: room
+});
