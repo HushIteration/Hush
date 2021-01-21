@@ -21,5 +21,6 @@ export const Message_Container = connect(state => ({
   clientSocket: state.user.clientSocket,
   message: state.user.messageArray,
   isGroupOrDm: state.user.isGroupOrDm,
-  currentRoom: state.user.currentRoom
+  currentRoom: state.user.currentRoom,
+  groupChatName: state.user.groupChatName
 }), mapDispatchToProps)(MessagesDisplay);

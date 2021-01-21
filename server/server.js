@@ -90,38 +90,26 @@ io.on("connection", (socket) => {
   // when user joins room
   let currRoom;
   socket.on("joinRoom", (room) => {
-    currRoom = room;
     console.log("join room working ---> ", room);
     socket.join(room);
     //sending message to user, wecloming to chat room
     socket.emit('message', `Welcome to ${room}`);
   });
 
-
+  // listening for chat message from SendMessage.jsx
   socket.on('chatMessage', (arr) => {
     const user = 'User'
     //getCurrentUser(socket.id);
     console.log("backend message: ", arr[0])
     console.log("CURRROOM ------>: ", arr[1])
-    io.to(arr[1]).emit('message', `user: ${arr[0]}`);
+    // send message to the roomName that was passed down
+    io.to(arr[1]).emit('newIndividualMessages', `user: ${arr[0]}`);
   });
 
   // Disconnecting from current room
-  socket.on('disconnect', () => {
-    const user = userLeave(socket.id);
-
-    if (user) {
-      io.to(user.room).emit(
-        'message',
-        formatMessage(botName, `${user.username} has left the chat`)
-      );
-
-      // Send users and room info
-      io.to(user.room).emit('roomUsers', {
-        room: user.room,
-        users: getRoomUsers(user.room)
-      });
-    }
+  socket.on('userdisconnect', (roomName) => {
+    console.log('DISCONNECT ---> ', roomName)
+    socket.leave(roomName);
   });
 
 

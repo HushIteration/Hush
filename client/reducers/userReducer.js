@@ -13,7 +13,8 @@ const initialState = {
   clientSocket: {},
   messageArray: [], 
   isGroupOrDm: false,
-  currentRoom: ''
+  currentRoom: '',
+  groupChatName: []
 };
 
 const userReducer = (state = initialState, action) => {
@@ -125,6 +126,14 @@ const userReducer = (state = initialState, action) => {
       currentRoom
     }
   } 
+  
+  case types.GROUP_CHAT_NAME: {
+    let groupChatName = action.payload
+    return {
+      ...state,
+      groupChatName
+    }
+  }
 
   default:
     return state;

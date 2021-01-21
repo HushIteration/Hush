@@ -15,7 +15,8 @@ const Conversations = ({
   setActiveConversations,
   email,
   isGroupOrDm,
-  currentRoom
+  currentRoom,
+  groupChatName
 }) => {
 
   // mapping dispatch to props- ADD_MESSAGE action creator 
@@ -120,15 +121,24 @@ const Conversations = ({
 
   const joinRoomBtn = (e, roomName) => {
     let currRoom = e.target.id
+    console.log('ROOM NAME ----> ', currRoom)
+    if (currRoom) {
+      console.log('SOCKET EMIT ACTIVATEDDDDDD' )
+      socket.emit('userdisconnect', currRoom)
+    }
+    console.log('THIS IS POOPOO PLATEER');
     isGroupOrDm(true)
     socket.emit('joinRoom', (currRoom));
     socket.on('message', message => {
       console.log(message);
-      addMessage(message);
+      groupChatName(message);
       currentRoom(currRoom);
       // Scroll down
       // chatMessages.scrollTop = chatMessages.scrollHeight;
     });
+    socket.on('newIndividualMessages', newChatMessage => {
+      addMessage(newChatMessage)
+    })
   }
 
   // creating list items or a tags or whatever the fuck
@@ -165,8 +175,8 @@ const Conversations = ({
         <InnerList open={groupOpen}>
           {chatrooms}
         </InnerList>
-        <button> create a chat room </button>
-        <button onClick={joinRoomBtn}> join a chat room </button>
+        {/* <button> create a chat room </button> */}
+        {/* <button onClick={joinRoomBtn}> join a chat room </button> */}
       </Ul>
     </Container>
   );

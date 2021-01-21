@@ -62,3 +62,8 @@ export const currentRoom = (room) => ({
   type: types.CURRENT_ROOM,
   payload: room
 });
+
+export const groupChatName = (name) => ({
+  type: types.GROUP_CHAT_NAME,
+  payload: name
+});
