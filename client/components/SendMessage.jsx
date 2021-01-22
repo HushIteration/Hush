@@ -42,7 +42,7 @@ const socket = io();
       // group messages
       let msg = input.value
       console.log('SEND MESSAGE ----> ', currentRoom)
-      socket.emit('chatMessage', [msg, currentRoom]);
+      socket.emit('chatMessage', [msg, currentRoom, email]);
       input.value=''
     }
   }

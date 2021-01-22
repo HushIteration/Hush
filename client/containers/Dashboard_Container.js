@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import Dashboard from '../components/Dashboard.jsx';
-import { setActiveConversations, setActivesLoaded, logout } from '../actions/actions';
+import { setActiveConversations, setActivesLoaded, logout, login } from '../actions/actions';
 
 /**
  * Maps dispatch to props & connects with Login component
@@ -13,7 +13,10 @@ const mapDispatchToProps = dispatch => ({
   },
     logout: () => {
       dispatch(logout());
-    }
+    },
+  login: () => {
+    dispatch(login())
+  }
 });
 
 export const Dashboard_Container = connect(state => ({

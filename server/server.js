@@ -4,6 +4,7 @@ const path = require("path");
 const models = require("./models");
 const cors = require("cors");
 const CryptoJS = require("crypto-js");
+const cookieParser = require('cookie-parser')
 
 // ---------
 const http = require("http");
@@ -22,6 +23,12 @@ const PORT = 3000;
 app.use("/build", express.static(path.join(__dirname, "../build")));
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser());
+
+
+// app.get("/", (req, res) => {
+//   res.status(200).sendFile(path.resolve(__dirname, "../client/index.html"));
+// });
 
 app.get("/dashboard", (req, res) => {
   res.status(200).sendFile(path.resolve(__dirname, "../client/index.html"));
@@ -30,6 +37,11 @@ app.get("/dashboard", (req, res) => {
 app.get("/login", (req, res) => {
   res.status(200).sendFile(path.resolve(__dirname, "../client/index.html"));
 });
+
+app.get('/getCookies', (req, res) => {
+  res.status(200).send(req.cookies)
+})
+
 
 server.listen(PORT, () => {
   console.log(`listening on ${PORT} `);
@@ -56,7 +68,6 @@ app.use((err, req, res, next) => {
 
   res.status(400).send("Internal Server Default Error");
 });
-
 /*
 // ----------------------------------------------------  SOCKET -------------------------------------------------------------------------
 Below is the socket logic.
@@ -85,10 +96,10 @@ by default our client will emit a "defineClient" event that will carry with it a
 const socketIdPhoneBook = {};
 const Conversation = models.Conversation;
 
+let currRoom;
 // listens for any connection
 io.on("connection", (socket) => {
   // when user joins room
-  let currRoom;
   socket.on("joinRoom", (room) => {
     console.log("join room working ---> ", room);
     socket.join(room);
@@ -103,13 +114,15 @@ io.on("connection", (socket) => {
     console.log("backend message: ", arr[0])
     console.log("CURRROOM ------>: ", arr[1])
     // send message to the roomName that was passed down
-    io.to(arr[1]).emit('newIndividualMessages', `user: ${arr[0]}`);
+    io.to(arr[1]).emit('newIndividualMessages', `${arr[2]}: ${arr[0]}`);
   });
 
   // Disconnecting from current room
   socket.on('userdisconnect', (roomName) => {
     console.log('DISCONNECT ---> ', roomName)
     socket.leave(roomName);
+    
+    // socket.broadcast.emit("broadcast", `USER LEFT THE ROOM ${roomName}`);
   });
 
 

@@ -49,7 +49,7 @@ userController.createUser = (req, res, next) => {
 
 userController.verifyUser = (req, res, next) => {
   const {username, password} = req.body;
-
+  res.cookie('user', username)
   User.findOne({username})
     .then((mongoRes) => {
       if (mongoRes === null) {

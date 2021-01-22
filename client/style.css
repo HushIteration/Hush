@@ -12,6 +12,11 @@ body {
   background: url(https://res.cloudinary.com/mrtommyliang/image/upload/v1610902001/y-so-serious-white_uu4wzj.png);
 }
 
+.groupChatName {
+  text-align: center;
+  font-family: monospace;
+}
+
 .brandNewMessage {
   text-align: left;
   font-family: monospace;

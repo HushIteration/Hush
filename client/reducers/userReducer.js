@@ -135,6 +135,14 @@ const userReducer = (state = initialState, action) => {
     }
   }
 
+  case types.DELETE_ON_DISCONNECT: {
+    let messageArray = []
+    return {
+      ...state,
+      messageArray
+    }
+  }
+
   default:
     return state;
   }

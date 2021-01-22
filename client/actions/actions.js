@@ -67,3 +67,7 @@ export const groupChatName = (name) => ({
   type: types.GROUP_CHAT_NAME,
   payload: name
 });
+
+export const deleteOnDisconnect = () => ({
+  type: types.DELETE_ON_DISCONNECT
+});

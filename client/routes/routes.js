@@ -15,6 +15,10 @@ const routes = [
     path: '/dashboard',
     component: Dashboard_Container
   }
+  //  {
+  //   path: '/',
+  //   component: Dashboard_Container
+  // }
 ];
 
 export default routes;

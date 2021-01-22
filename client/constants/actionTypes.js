@@ -14,3 +14,4 @@ export const ADD_MESSAGE = "ADD_MESSAGE";
 export const IS_GROUP_OR_DM = "IS_GROUP_OR_DM";
 export const CURRENT_ROOM = "CURRENT_ROOM";
 export const GROUP_CHAT_NAME = "GROUP_CHAT_NAME";
+export const DELETE_ON_DISCONNECT = "DELETE_ON_DISCONNECT";

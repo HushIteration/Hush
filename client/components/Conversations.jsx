@@ -16,7 +16,8 @@ const Conversations = ({
   email,
   isGroupOrDm,
   currentRoom,
-  groupChatName
+  groupChatName,
+  deleteOnDisconnect
 }) => {
 
   // mapping dispatch to props- ADD_MESSAGE action creator 
@@ -116,21 +117,19 @@ const Conversations = ({
   //-----------------------------------------
   // create a new room functionality
   // Join chatroom
-  const randomChatRooms = ['STAB-RABBIT', 'MUSCULAR-CORGI', 'EVIL-SNOWMAN', 'DROOPY-EYED-SNAKE'];
+  const randomChatRooms = ['Stab-Rabbit', 'Muscular-Corgi', 'Evil-Snowman', 'Droopy-Eyed-Snake'];
   let chatrooms = []
 
   const joinRoomBtn = (e, roomName) => {
     let currRoom = e.target.id
     console.log('ROOM NAME ----> ', currRoom)
     if (currRoom) {
-      console.log('SOCKET EMIT ACTIVATEDDDDDD' )
+      deleteOnDisconnect()
       socket.emit('userdisconnect', currRoom)
     }
-    console.log('THIS IS POOPOO PLATEER');
     isGroupOrDm(true)
     socket.emit('joinRoom', (currRoom));
     socket.on('message', message => {
-      console.log(message);
       groupChatName(message);
       currentRoom(currRoom);
       // Scroll down
@@ -141,10 +140,14 @@ const Conversations = ({
     })
   }
 
-  // creating list items or a tags or whatever the fuck
+  const reloadPage = () => {
+    location.reload();
+  }
+
+  // creating list items or a tags
   for (let i = 0; i < randomChatRooms.length; i += 1) {
     let temp = randomChatRooms[i]
-    chatrooms.push(<li className="groupsName" id={temp} onClick={(e, temp) => joinRoomBtn(e, temp)}>{randomChatRooms[i]}</li>)
+    chatrooms.push(<li className="groupsName" id={temp} onClick={(e) => joinRoomBtn(e)}>{randomChatRooms[i]}</li>)
   }
 
   return (
@@ -174,9 +177,8 @@ const Conversations = ({
         </li>
         <InnerList open={groupOpen}>
           {chatrooms}
+        <button onClick={reloadPage}> Leave Chat </button>
         </InnerList>
-        {/* <button> create a chat room </button> */}
-        {/* <button onClick={joinRoomBtn}> join a chat room </button> */}
       </Ul>
     </Container>
   );

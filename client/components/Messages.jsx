@@ -47,10 +47,6 @@ const Messages = ({ activeChat, email, message, groupMessage, groupChatName }) =
         />
       );
     }
-    for (let i = 0; i < groupMessage.length ; i+= 1) {
-      groupChat.push(<p className="brandNewMessage">{groupMessage[i]}</p>)
-      console.log(groupChat);
-    }
   }
   // re-build Message component array on state update
   useEffect(() => {
@@ -71,22 +67,22 @@ const Messages = ({ activeChat, email, message, groupMessage, groupChatName }) =
           />
         );
       }
-      // for loop to push into a new empty array
     }
   }, [activeChat])
-
-  for (let i = 0; i < groupMessage.length ; i+= 1) {
-    groupChat.push(<p className="brandNewMessage">{groupMessage[i]}</p>)
-    console.log(groupChat);
-  };
+  
+  // creates the p for new incoming group messages
+    for (let i = 0; i < groupMessage.length ; i += 1) {
+      groupChat.push(<p className="brandNewMessage">{groupMessage[i]}</p>)
+      console.log(`GROUPCHAT LENGTH ----> ${groupChat.length}`);
+    };
 
   return (
-    <Container>
-      {/* <div className="groupMessageParentContainer"> */}
-        {groupChat}
-      {/* </div> */}
+    <div>
       <h1 className="groupChatName">{groupChatName}</h1>
+    <Container>
+      {groupChat}
     </Container>
+    </div>
   );
 };
 
@@ -98,7 +94,7 @@ export default Messages;
 
 const Container = styled.div`
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   align-items: center;
   height: 80%;
   overflow-y: scroll;
