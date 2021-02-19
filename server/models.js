@@ -32,6 +32,10 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  conversations: {
+    type: Schema.Types.ObjectId,
+    ref: "Conversation"
+  }
 });
 
 const conversationSchema = new Schema({
@@ -41,12 +45,17 @@ const conversationSchema = new Schema({
   },
   participants: [Object],
   messages: [Object],
+  users: {
+    type: Schema.Types.ObjectId,
+    ref: "User"
+  }
 });
+
 
 // {name: 'ross'} {name: 'matt'}
 
-const Conversation = mongoose.model("conversation", conversationSchema);
-const User = mongoose.model("user", userSchema);
+const Conversation = mongoose.model("Conversation", conversationSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports = {
   User,
