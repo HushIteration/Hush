@@ -3,10 +3,11 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import CryptoJS from "crypto-js";
 
-const SendMessage = ({ activeChat, email, activeRecipient, clientSocket, addNewMessage }) => {
+const SendMessage = ({ activeChat, email, activeRecipient, clientSocket, addNewMessage, isGroupOrDm, currentRoom}) => {  
   /**
 Socket Helper Functions
  */
+const socket = io();
 
   const sendDM = (cid, sender, recipient, text) => {
 
@@ -28,13 +29,22 @@ Socket Helper Functions
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    let date = new Date()
-    let dateInSeconds = Date.parse(date);
-    sendDM(activeChat.cid, email, activeRecipient, input.value);
-    const secret = 'tacos';
-    let ciphertext = CryptoJS.AES.encrypt(input.value, secret).toString();
-    addNewMessage({sender: email, recipient: activeRecipient, text: ciphertext, timestamp: dateInSeconds});
-    input.value= '';
+    // if isGroupOrDm is false, private message
+    if (!isGroupOrDm) {
+      let date = new Date()
+      let dateInSeconds = Date.parse(date);
+      sendDM(activeChat.cid, email, activeRecipient, input.value);
+      const secret = 'tacos';
+      let ciphertext = CryptoJS.AES.encrypt(input.value, secret).toString();
+      addNewMessage({sender: email, recipient: activeRecipient, text: ciphertext, timestamp: dateInSeconds});
+      input.value= '';
+    } else {
+      // group messages
+      let msg = input.value
+      console.log('SEND MESSAGE ----> ', currentRoom)
+      socket.emit('chatMessage', [msg, currentRoom, email]);
+      input.value=''
+    }
   }
 
   return (
@@ -43,6 +53,7 @@ Socket Helper Functions
         <Form onSubmit={(e) => handleSubmit(e)}>
           <Input 
             type='text' 
+            id='inputText'
             placeholder='Send a message to Username...' 
             ref={(node) => input = node} 
           />

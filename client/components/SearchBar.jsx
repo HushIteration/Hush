@@ -78,9 +78,6 @@ const SearchBar = ({ open, handleClick, activeConversations, setActiveChat, setA
         const request = await fetch('/user/getUsers', requestOptions);
         const response = await request.json();
         users = await response.users;
-        // filter out users that appear in activeConversations
-        console.log('users', users);
-        console.log('activeConversations', activeConversations);
         users = users.filter((user) => {
           if (!activeConversations.includes(user)) {
             return user;

@@ -1,3 +1,5 @@
+// npm i -D webpack webpack-cli webpack-dev-server nodemon concurrently babel-loader @babel/core @babel/preset-env @babel/preset-react mini-css-extract-plugin sass sass-loader style-loader css-loader
+
 const path = require('path');
 
 module.exports = {
@@ -25,6 +27,12 @@ module.exports = {
     publicPath: '/build/',
     proxy: {
       '/': 'http://localhost:3000',
+      '/user': 'http://localhost:3000',
+      '/chat': 'http://localhost:3000',
+      '/socket.io': {
+        target: 'http://localhost:3000',
+        ws: true
+      }
     },
     hot: true,
     watchOptions: {

@@ -44,6 +44,30 @@ export const addNewMessage = (messagePayload) => ({
   payload: messagePayload
 });
 
+export const addMessage = (messagePayload) => ({
+  type: types.ADD_MESSAGE,
+  payload: messagePayload
+});
+
 export const logout = () => ({
   type: types.LOGOUT
+});
+
+export const isGroupOrDm = (bool) => ({
+  type: types.IS_GROUP_OR_DM,
+  payload: bool
+});
+
+export const currentRoom = (room) => ({
+  type: types.CURRENT_ROOM,
+  payload: room
+});
+
+export const groupChatName = (name) => ({
+  type: types.GROUP_CHAT_NAME,
+  payload: name
+});
+
+export const deleteOnDisconnect = () => ({
+  type: types.DELETE_ON_DISCONNECT
 });

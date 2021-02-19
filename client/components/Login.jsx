@@ -102,13 +102,11 @@ const Login = ({ login, signup, history, setClientSocket, addNewMessage, activeR
 
     (async () => {
       try {
-        console.log('email', email);
         const request = await fetch('/user/verify', requestOptions);
         const status = request.status;
         const response = await request.json();
         if (response.verified) {
           // Set state in redux store to logged in
-          console.log(email.value);
           login(email.value);
           connectToSocket();
           defineMe(email.value);

@@ -10,7 +10,11 @@ const initialState = {
   activeChat: {cid: '', conversation: []},
   activeConversations: [],
   activesLoaded: false,
-  clientSocket: {}
+  clientSocket: {},
+  messageArray: [], 
+  isGroupOrDm: false,
+  currentRoom: '',
+  groupChatName: []
 };
 
 const userReducer = (state = initialState, action) => {
@@ -96,6 +100,47 @@ const userReducer = (state = initialState, action) => {
         'conversation': conversation
       }
     };
+  }
+
+  case types.ADD_MESSAGE: {
+    const messageArray = [...state.messageArray, action.payload]
+    // console.log('addMessagehit', messageArray);
+    return {
+      ...state,
+      messageArray
+    }
+  }
+
+  case types.IS_GROUP_OR_DM: {
+    // console.log('USER REDUCER', action.payload)
+    return {
+      ...state,
+      isGroupOrDm: action.payload
+    }
+  }
+
+  case types.CURRENT_ROOM: {
+    let currentRoom = action.payload
+    return {
+      ...state,
+      currentRoom
+    }
+  } 
+  
+  case types.GROUP_CHAT_NAME: {
+    let groupChatName = action.payload
+    return {
+      ...state,
+      groupChatName
+    }
+  }
+
+  case types.DELETE_ON_DISCONNECT: {
+    let messageArray = []
+    return {
+      ...state,
+      messageArray
+    }
   }
 
   default:

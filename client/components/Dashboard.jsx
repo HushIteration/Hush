@@ -10,14 +10,27 @@ import { Message_Container } from '../containers/Message_Container.jsx';
  * How can we redirect to login on unsuccessfull verification?
  */
 
-const Dashboard = ({ activesLoaded, setActivesLoaded, setActiveConversations, activeConversations, setActiveChat, activeChat, loggedIn, history, email, activeRecipient, logout, clientSocket }) => {
 
+const Dashboard = ({ activesLoaded, setActivesLoaded, setActiveConversations, activeConversations, setActiveChat, activeChat, loggedIn, history, email, activeRecipient, logout, clientSocket, login }) => {
+  
   // if user is not logged in, redirect to login page
-  useEffect(() => {
-    console.log(loggedIn);
-    if (!loggedIn) history.push('/login');
-  }, [loggedIn]);
+  // useEffect(() => {
+    //   if (!loggedIn) history.push('/login');
+    // }, [loggedIn]);
+    
 
+  // useEffect(() => {
+  //   fetch('/getCookies')
+  //     .then(res => {
+  //       console.log(res, 'res')
+  //       return res.json()
+  //     })
+  //     .then(parsedData =>
+  //       {
+  //         console.log(parsedData.user, 'parsed data')
+  //         login(parsedData.user)
+  //       }) 
+  // }, []);
 
   const handleLogout = (e) => {
     (() => { //pass in this.state.username

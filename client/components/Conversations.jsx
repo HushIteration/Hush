@@ -1,11 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+
+const socket = io();
 
 /**
  * Renders active conversations to sidepanel
  */
+ 
 
-const Conversations = ({ setActiveChat, activeConversations, setActiveConversations, email }) => {
+const Conversations = ({
+  addMessage,
+  setActiveChat,
+  activeConversations,
+  setActiveConversations,
+  email,
+  isGroupOrDm,
+  currentRoom,
+  groupChatName,
+  deleteOnDisconnect
+}) => {
+
+  // mapping dispatch to props- ADD_MESSAGE action creator 
+// const mapDispatchToProps = dispatch => ({
+//   addMessage: (message) => {
+//     dispatch(addMessage(message));
+//   }
+// });
 
   /**
    * Set state
@@ -16,31 +36,27 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
   const [groupOpen, setGroupOpen] = useState(false);
   const [conversationSelected, setConversationSelected] = useState(false);
 
-
-
   // Make request for all active conversations
 
   useEffect(() => {
     (async () => {
       const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: email })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: email }),
       };
-
       try {
-        const request = await fetch('/chat/userconvos', requestOptions);
+        const request = await fetch("/chat/userconvos", requestOptions);
         const response = await request.json();
 
         // update list of users who have an active conversation with logged-in user
 
         setActiveConversations(
-          response.conversations.map(convo => {
-
+          response.conversations.map((convo) => {
             // conversation list query returns both users attached to a conversation
             // filter out user name of logged in user to display only recipient email
             const noDuplicatesArr = [];
-            const temp = convo.participants.filter(user => {
+            const temp = convo.participants.filter((user) => {
               if (user.name !== email && !noDuplicatesArr.includes(user.name)) {
                 noDuplicatesArr.push(user.name);
                 return user.name;
@@ -73,12 +89,12 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
 
   const handleUserClick = (e) => {
     const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         sender: email,
-        recipient: e.target.innerText
-      })
+        recipient: e.target.innerText,
+      }),
     };
 
     /**
@@ -88,9 +104,8 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
 
     try {
       (async () => {
-        const request = await fetch('/chat/convo', requestOptions);
+        const request = await fetch("/chat/convo", requestOptions);
         const response = await request.json();
-        console.log
         // setActiveChat action updates state with currently selected user chat log
         setActiveChat({ response: response, recipient: e.target.innerText });
       })();
@@ -99,18 +114,51 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
     }
   };
 
+  //-----------------------------------------
+  // create a new room functionality
+  // Join chatroom
+  const randomChatRooms = ['Stab-Rabbit', 'Muscular-Corgi', 'Evil-Snowman', 'Droopy-Eyed-Snake'];
+  let chatrooms = []
+
+  const joinRoomBtn = (e, roomName) => {
+    let currRoom = e.target.id
+    console.log('ROOM NAME ----> ', currRoom)
+    if (currRoom) {
+      deleteOnDisconnect()
+      socket.emit('userdisconnect', currRoom)
+    }
+    isGroupOrDm(true)
+    socket.emit('joinRoom', (currRoom));
+    socket.on('message', message => {
+      groupChatName(message);
+      currentRoom(currRoom);
+      // Scroll down
+      // chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+    socket.on('newIndividualMessages', newChatMessage => {
+      addMessage(newChatMessage)
+    })
+  }
+
+  const reloadPage = () => {
+    location.reload();
+  }
+
+  // creating list items or a tags
+  for (let i = 0; i < randomChatRooms.length; i += 1) {
+    let temp = randomChatRooms[i]
+    chatrooms.push(<li className="groupsName" id={temp} onClick={(e) => joinRoomBtn(e)}>{randomChatRooms[i]}</li>)
+  }
+
   return (
     <Container>
       <Header>Conversations</Header>
       <Ul>
         <li>
-          <DirectCaret
-            onClick={(e) => handleDirectClick(e)}
-            open={directOpen}
-          >
+          <DirectCaret onClick={(e) => handleDirectClick(e)} open={directOpen}>
             Direct
           </DirectCaret>
-          <InnerList open={directOpen} >
+          <InnerList open={directOpen}>
             {activeConversations.map((user, i) => (
               <Direct
                 key={`${user}${i}`}
@@ -123,15 +171,13 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
           </InnerList>
         </li>
         <li>
-          <GroupCaret
-            onClick={(e) => handleGroupClick(e)}
-            open={groupOpen}
-          >
+          <GroupCaret onClick={(e) => handleGroupClick(e)} open={groupOpen}>
             Groups
           </GroupCaret>
         </li>
-        <InnerList open={groupOpen} >
-          <Group>Ian, Ross & Wei</Group>
+        <InnerList open={groupOpen}>
+          {chatrooms}
+        <button onClick={reloadPage}> Leave Chat </button>
         </InnerList>
       </Ul>
     </Container>
@@ -147,7 +193,7 @@ const Container = styled.div`
   height: 65%;
   margin-top: -1rem;
   z-index: 2;
-  font-family: 'Josefin Sans', sans-serif;
+  font-family: "Josefin Sans", sans-serif;
   overflow: hidden;
 `;
 const Ul = styled.ul`
@@ -166,37 +212,33 @@ const DirectCaret = styled.span`
     content: "\\005E";
     color: black;
     display: inline-block;
-    padding: .5rem;
-    transform: ${props => props.open ? 'rotate(180deg)' : 'rotate(90deg)'}; 
-  };
+    padding: 0.5rem;
+    transform: ${(props) => (props.open ? "rotate(180deg)" : "rotate(90deg)")};
+  }
 `;
 
 const GroupCaret = styled(DirectCaret)`
   &:before {
-    transform: ${props => props.open ? 'rotate(180deg)' : 'rotate(90deg)'};
+    transform: ${(props) => (props.open ? "rotate(180deg)" : "rotate(90deg)")};
   }
 `;
 
 const Direct = styled.li`
-  
   text-indent: 1rem;
-  padding: .5rem;
+  padding: 0.5rem;
   margin-left: 1rem;
   cursor: pointer;
   &:hover {
     background-color: #fcf7fa;
-    
   }
 `;
 
 const InnerList = styled.ul`
   list-style-type: none;
-  display: ${props => props.open ? 'initial' : 'none'};
+  display: ${(props) => (props.open ? "initial" : "none")};
 `;
 
-const Group = styled(Direct)`
-
-`;
+const Group = styled(Direct)``;
 
 const Header = styled.h3`
   height: fit-content;

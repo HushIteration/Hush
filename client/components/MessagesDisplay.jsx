@@ -9,12 +9,14 @@ import Messages from './Messages.jsx';
  * Consists of messages and input to send messages
  */
 
-const Message_Display = ({ activeChat, sendMessage, activeConversations, email, activeRecipient, clientSocket, addNewMessage }) => {
+const Message_Display = ({ activeChat, sendMessage, activeConversations, email, activeRecipient, clientSocket, addNewMessage, message, isGroupOrDm, currentRoom, groupChatName }) => {
   return (
     <Container>
       <Messages
         email={email}
         activeChat={activeChat}
+        groupMessage={message}
+        groupChatName={groupChatName}
       />
       <SendMessage
         addNewMessage={addNewMessage}
@@ -23,6 +25,8 @@ const Message_Display = ({ activeChat, sendMessage, activeConversations, email, 
         email={email}
         activeChat={activeChat}
         dispatch={sendMessage}
+        isGroupOrDm={isGroupOrDm}
+        currentRoom={currentRoom}
       />
     </Container>
   );

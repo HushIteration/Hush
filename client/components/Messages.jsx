@@ -2,15 +2,14 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import Message from './Message.jsx';
 import CryptoJS from 'crypto-js';
-
+import '../style.css'
 
 
 
 /**
  * Renders all individual Message components
  */
-const Messages = ({ activeChat, email }) => {
-
+const Messages = ({ activeChat, email, message, groupMessage, groupChatName }) => {
   // Define colors for sender username
   const colors = {
     user1: '#e91e63',
@@ -23,6 +22,7 @@ const Messages = ({ activeChat, email }) => {
    */
 
   const chat = [];
+  const groupChat = [];
   const { conversation } = activeChat;
   // build Message component array
   if (conversation.length > 0) {
@@ -33,11 +33,9 @@ const Messages = ({ activeChat, email }) => {
       const secret = 'tacos';
       let bytes = CryptoJS.AES.decrypt(conversation[i].text, secret);
       let originalText = bytes.toString(CryptoJS.enc.Utf8);
-
       let color;
       if (conversation[i].sender === email) color = colors.user1;
       else color = colors.user2;
-
       chat.push(
         <Message
           key={i}
@@ -45,38 +43,46 @@ const Messages = ({ activeChat, email }) => {
           message={originalText}
           timeStamp={conversation[i].timestamp}
           color={color}
+          groupMessages={groupMessage}
         />
       );
     }
   }
-
   // re-build Message component array on state update
   useEffect(() => {
     const { conversation } = activeChat;
-
     if (conversation.length > 0) {
       conversation.reverse();
       for (let i = 0; i < conversation.length; i += 1) {
         const secret = 'tacos';
         let bytes = CryptoJS.AES.decrypt(conversation[i].text, secret);
         let originalText = bytes.toString(CryptoJS.enc.Utf8);
-
         chat.push(
           <Message
             key={i}
             sender={conversation[i].sender}
             message={originalText}
             timeStamp={conversation[i].timestamp}
+            groupMessages={groupMessage}
           />
         );
       }
     }
   }, [activeChat])
+  
+  // creates the p for new incoming group messages
+    for (let i = 0; i < groupMessage.length ; i += 1) {
+      groupChat.push(<p className="brandNewMessage">{groupMessage[i]}</p>)
+      console.log(`GROUPCHAT LENGTH ----> ${groupChat.length}`);
+    };
 
   return (
+    <div>
+      <h1 className="groupChatName">{groupChatName}</h1>
     <Container>
-      {chat}
+      {groupChat}
     </Container>
+    </div>
   );
 };
 
@@ -88,7 +94,7 @@ export default Messages;
 
 const Container = styled.div`
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   align-items: center;
   height: 80%;
   overflow-y: scroll;
